@@ -8,7 +8,7 @@ Installation
 
 To install this clipper module, perform the following:
 
-1. Add `clipper: <version>` to your package.json
+1. Add `clipper: <version>` to your package.json dependencies
 2. Use the command `npm install`
 
 Use
