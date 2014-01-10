@@ -1,0 +1,31 @@
+{
+  "name": "clipper",
+  "description": "Node binding to C++ clipping library",
+  "version": "1.0.0",
+  "engines": {
+    "node": ">= 0.2.0"
+  },
+  "author": {
+    "name": "Kyle Burnett",
+    "email": "kburnett@dotdecimal.com"
+  },
+  "contributors": [
+    {
+      "name": "Kyle Burnett",
+      "email": "kburnett@dotdecimal.com"
+    }
+  ],
+  "keywords": [
+    "polygon",
+    "clipping",
+    "clipper"
+  ],
+  "scripts": {
+    "test": "make test"
+  },
+  "devDependencies": {
+	"mocha": "1.13.0",
+	"should": "1.2.2"
+  },
+  "main": "./lib/clipper.js"
+}
