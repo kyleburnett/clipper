@@ -3,7 +3,7 @@
   "description": "Node binding to C++ clipping library",
   "version": "1.0.0",
   "engines": {
-    "node": ">= 0.2.0"
+    "node": ">= 0.10.0"
   },
   "author": {
     "name": "Kyle Burnett",
