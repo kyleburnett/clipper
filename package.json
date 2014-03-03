@@ -1,7 +1,7 @@
 {
   "name": "clipper",
   "description": "Node binding to C++ clipping library",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "engines": {
     "node": ">= 0.10.0"
   },
@@ -13,6 +13,10 @@
     {
       "name": "Kyle Burnett",
       "email": "kburnett@dotdecimal.com"
+    },
+    {
+      "name": "Tim Cameron Ryan",
+      "email": "tim@timryan.org"
     }
   ],
   "keywords": [
