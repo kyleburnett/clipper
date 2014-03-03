@@ -23,5 +23,8 @@ API
 -------
 
 ### simplify(coords[, scale_factor])
- * <i>coords</i>: and array of vertices
+ * <i>coords</i>: an array of vertices
  * <i>scale_factor</i>: the factor by which to scale each coordinate in <i>coords</i>
+
+### union(coords)
+ * <i>coords</i>: an array of vertices
