@@ -11,7 +11,7 @@ class ClipperWrap : public node::ObjectWrap {
         static v8::Handle<v8::Value> NewInstance(const v8::Arguments& args);
 
     private:
-        explicit ClipperWrap(ClipperLib::PolyFillType s_fill, ClipperLib::PolyFillType c_fill);
+        explicit ClipperWrap();
         ~ClipperWrap();
 
         static v8::Handle<v8::Value> New(const v8::Arguments& args);
@@ -35,5 +35,6 @@ ClipperLib::PolyFillType get_polyfilltype(double value);
 void get_vertices_from_path(ClipperLib::Path &path, v8::Handle<v8::Array> &array);
 void get_clip_solution(ClipperLib::PolyTree &solution, v8::Handle<v8::Array> &polygons, v8::Handle<v8::Array> &polylines);
 bool add_path(ClipperLib::Clipper &clipper, v8::Local<v8::Array> &vertices, ClipperLib::PolyType type, bool closed);
+void handle_exception(const v8::Arguments& args, v8::Local<v8::Value> e);
 
 #endif

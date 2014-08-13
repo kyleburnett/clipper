@@ -1,7 +1,8 @@
 var clipper = require('../');
 
+Promise.promisifyAll(clipper);
+
 var clip1 = clipper.begin();
-var clipperAsync = clipper.usePromises;
 var poly1 = [0, 0, 10, 0, 10, 10, 0, 10];
 var poly2 = [5, 5, 15, 5, 15, 15, 5, 15];
 
@@ -67,17 +68,35 @@ describe('#addSubjectPath()', function() {
         expect(clip1.addSubjectPath(poly2, false)).to.be.undefined;
     });
 
+    it('should be able to use callbacks', function(done) {
+        clip1.addSubjectPath(poly1, false, function(err, value) {
+            expect(err).to.be.false;
+            expect(value).to.be.undefined;
+            done();
+        });
+    });
+
+    it('should be able to use callbacks to catch errors', function(done) {
+        clip1.addSubjectPath([0, 0, 10, 0, 10, 10, 0], true, function(err, value) {
+            expect(err).to.eql(new Error('Wrong number of vertex coordinates in list'));
+            expect(value).to.be.undefined;
+            done();
+        });
+    })
+
     it('should be able to use promises', function() {
-        return clipperAsync.begin().then(function(clip) {
-            return clip.addSubjectPath(poly1, true).then(function(value) {
+        return clipper.beginAsync().then(Promise.promisifyAll).then(function(clip) {
+            Promise.promisifyAll(clip);
+            return clip.addSubjectPathAsync(poly1, true).then(function(value) {
                 expect(value).to.be.undefined;
             });
         });
     });
 
-    it('should be rejected with an error when exceptions are generated', function() {
-        return clipperAsync.begin().then(function(clip) {
-            return clip.addSubjectPath();
-        }).should.be.rejectedWith(TypeError, 'Wrong type for argument 1: expected array');
+    it('should be able catch errors with promises', function() {
+        return clipper.beginAsync().then(Promise.promisifyAll).then(function(clip) {
+            Promise.promisifyAll(clip);
+            return clip.addSubjectPathAsync([0, 0, 10, 0, 10, 10, 0], true);
+        }).should.be.rejectedWith(Error, 'Wrong number of vertex coordinates in list');
     });
 });
