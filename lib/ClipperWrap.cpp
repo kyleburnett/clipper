@@ -28,8 +28,8 @@ void ClipperWrap::Init() {
         FunctionTemplate::New(AddSubjectPath)->GetFunction());
     tpl->PrototypeTemplate()->Set(String::NewSymbol("addClipPath"),
         FunctionTemplate::New(AddClipPath)->GetFunction());
-    // tpl->PrototypeTemplate()->Set(String::NewSymbol("setFillTypes"),
-    //     FunctionTemplate::New(SetFillTypes)->GetFunction());
+    tpl->PrototypeTemplate()->Set(String::NewSymbol("setFillTypes"),
+        FunctionTemplate::New(SetFillTypes)->GetFunction());
     tpl->PrototypeTemplate()->Set(String::NewSymbol("union"),
         FunctionTemplate::New(Union)->GetFunction());
     tpl->PrototypeTemplate()->Set(String::NewSymbol("intersection"),
@@ -104,7 +104,7 @@ Handle<Value> ClipperWrap::AddSubjectPath(const Arguments& args) {
         return scope.Close(Undefined());
     }
 
-    if (!add_path(obj->clipper_, path, ptSubject, args[1]->ToBoolean()->Value())) { // need to handle exceptions properly here
+    if (!add_path(args, obj->clipper_, path, ptSubject, args[1]->ToBoolean()->Value())) {
         return scope.Close(Undefined());
     }
 
@@ -136,7 +136,7 @@ Handle<Value> ClipperWrap::AddClipPath(const Arguments& args) {
         return scope.Close(Undefined());
     }
 
-    if (!add_path(obj->clipper_, path, ptClip, true)) { // need to handle exceptions properly here
+    if (!add_path(args, obj->clipper_, path, ptClip, true)) {
         return scope.Close(Undefined());
     }
 
@@ -150,31 +150,65 @@ Handle<Value> ClipperWrap::AddClipPath(const Arguments& args) {
     return scope.Close(Undefined());
 }
 
-// Handle<Value> ClipperWrap::SetFillTypes(const Arguments& args) {
-//     HandleScope scope;
+Handle<Value> ClipperWrap::SetFillTypes(const Arguments& args) {
+    HandleScope scope;
 
-//     ClipperWrap* obj = ObjectWrap::Unwrap<ClipperWrap>(args.This());
+    ClipperWrap* obj = ObjectWrap::Unwrap<ClipperWrap>(args.This());
 
-//     if (args.Length() < 1 && args.Length() > 3) {
-//         handle_exception(args, Exception::Error(String::New("Must specify at least the subject fill typoe")));
-//         return scope.Close(Undefined());
-//     }
+    PolyFillType subj_temp, clip_temp;
 
-//     if (!args[0]->IsNumber()) {
-//         handle_exception(args, Exception::TypeError(String::New("Wrong type for argument 1: expected number")));
-//         return scope.Close(Undefined());
-//     }
+    // First argument
+    if (args[0]->IsUndefined()) {
+        handle_exception(args, Exception::Error(String::New("Requires 1 to 3 arguments")));
+        return scope.Close(Undefined());
+    } else {
+        if (!args[0]->IsNumber()) {
+            handle_exception(args, Exception::TypeError(String::New("Wrong type for argument 1: expected number")));
+            return scope.Close(Undefined());
+        } else {
+            subj_temp = get_polyfilltype(args[0]->NumberValue());
+        }
+    }
 
-//     if (args.Length() == 2 && (!args[1]->IsNumber() && !args[2]->IsFunction())) {
-//         handle_exception(args, Exception::TypeError(String::New("Wrong type for argument 2: expected number or function")));
-//         return scope.Close(Undefined());
-//     }
+    // Second argument (optional)
+    if (!args[1]->IsUndefined()) {
+        if (args[1]->IsNumber()) {
+            clip_temp = get_polyfilltype(args[1]->NumberValue());
+        } else if (args[1]->IsFunction()) {
+            obj->subj_fill_ = subj_temp;
+            Local<Function> cb = Local<Function>::Cast(args[1]);
+            const unsigned argc = 2;
+            Local<Value> argv[argc] = { Local<Value>::New(Boolean::New(false)), Local<Value>::New(Undefined()) };
+            cb->Call(Context::GetCurrent()->Global(), argc, argv);
+            return scope.Close(Undefined());
+        } else {
+            handle_exception(args, Exception::TypeError(String::New("Wrong type for argument 2: expected number or function")));
+            return scope.Close(Undefined());
+        }
+    }
 
-//     if (args.Length() == 3 && !args[2]->IsFunction()) {
-//         handle_exception(args, Exception::TypeError(String::New("Wrong type for argument 3: expected function")));
-//         return scope.Close(Undefined());
-//     }
-// }
+    // Third argument (optional)
+    if (!args[2]->IsUndefined()) {
+        if (args[2]->IsFunction()) {
+            obj->subj_fill_ = subj_temp;
+            obj->clip_fill_ = clip_temp;
+            Local<Function> cb = Local<Function>::Cast(args[2]);
+            const unsigned argc = 2;
+            Local<Value> argv[argc] = { Local<Value>::New(Boolean::New(false)), Local<Value>::New(Undefined()) };
+            cb->Call(Context::GetCurrent()->Global(), argc, argv);
+            return scope.Close(Undefined());
+        } else {
+            handle_exception(args, Exception::TypeError(String::New("Wrong type for argument 3: expected function")));
+            return scope.Close(Undefined());
+        }
+    }
+
+    // Commit changes
+    obj->subj_fill_ = subj_temp;
+    obj->clip_fill_ = clip_temp;
+
+    return scope.Close(Undefined());
+}
 
 Handle<Value> ClipperWrap::Union(const Arguments& args) {
     HandleScope scope;
@@ -297,7 +331,7 @@ void get_clip_solution(PolyTree &solution, Handle<Array> &polygons, Handle<Array
 
 }
 
-bool add_path(Clipper &clipper, Local<Array> &vertices, PolyType type, bool closed) {
+bool add_path(const Arguments& args, Clipper &clipper, Local<Array> &vertices, PolyType type, bool closed) {
     int i;
     const int len = vertices->Length();
     Path path;
@@ -308,7 +342,7 @@ bool add_path(Clipper &clipper, Local<Array> &vertices, PolyType type, bool clos
     }
 
     if (!clipper.AddPath(path, type, closed)) {
-        ThrowException(Exception::Error(String::New("An error occurred when attempting to add a path")));
+        handle_exception(args, Exception::Error(String::New("An error occurred when attempting to add a path")));
         return false;
     }
 
