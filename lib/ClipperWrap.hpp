@@ -3,7 +3,6 @@
 
 #include <node.h>
 #include "../src/clipper.hpp"
-// #include "../src/clipper.cpp"
 
 class ClipperWrap : public node::ObjectWrap {
     public:
@@ -23,7 +22,7 @@ class ClipperWrap : public node::ObjectWrap {
         static v8::Handle<v8::Value> Difference(const v8::Arguments& args);
         static v8::Handle<v8::Value> Xor(const v8::Arguments& args);
         static v8::Persistent<v8::Function> constructor;
-        static bool do_clipping_operation(ClipperWrap &obj, v8::Handle<v8::Array> &final, ClipperLib::ClipType type);
+        static bool do_clipping_operation(const v8::Arguments& args, ClipperWrap &obj, v8::Handle<v8::Array> &final, ClipperLib::ClipType type);
         ClipperLib::Clipper clipper_;
         ClipperLib::PolyFillType subj_fill_;
         ClipperLib::PolyFillType clip_fill_;

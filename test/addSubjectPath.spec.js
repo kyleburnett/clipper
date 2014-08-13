@@ -33,13 +33,24 @@ describe('#addSubjectPath()', function() {
     });
 
     it('should throw an error if the second argument is a boolean value', function() {
-        var args1 = [[], 0];
-        var args2 = [[], 'str'];
-        var args3 = [[], null];
-        var args4 = [[], {
-            prop: 'one'
-        }];
-        var args5 = [[], []];
+        var args1 = [
+            [], 0
+        ];
+        var args2 = [
+            [], 'str'
+        ];
+        var args3 = [
+            [], null
+        ];
+        var args4 = [
+            [], {
+                prop: 'one'
+            }
+        ];
+        var args5 = [
+            [],
+            []
+        ];
         expect(wrap(clip1, args1)).to.throw(TypeError, 'Wrong type for argument 2: expected boolean');
         expect(wrap(clip1, args2)).to.throw(TypeError, 'Wrong type for argument 2: expected boolean');
         expect(wrap(clip1, args3)).to.throw(TypeError, 'Wrong type for argument 2: expected boolean');
@@ -48,7 +59,9 @@ describe('#addSubjectPath()', function() {
     });
 
     it('should throw an error if vertex array is the wrong size', function() {
-        var args = [[0, 0, 10, 0, 10, 10, 0], true];
+        var args = [
+            [0, 0, 10, 0, 10, 10, 0], true
+        ];
         expect(wrap(clip1, args)).to.throw(Error, 'Wrong number of vertex coordinates in list');
     });
 

@@ -3,6 +3,7 @@ var clipper = require('../');
 Promise.promisifyAll(clipper);
 
 var clip1 = clipper.begin();
+
 function wrap(clip, args) {
     return function() {
         clip.setFillTypes.apply(clip, args);
@@ -18,7 +19,9 @@ describe('#setFillTypes()', function() {
 
     it('should throw an error if the first argument is not a number', function() {
         var args1 = [true];
-        var args2 = [[]];
+        var args2 = [
+            []
+        ];
         var args3 = ['str'];
         var args4 = [null];
         var args5 = [{

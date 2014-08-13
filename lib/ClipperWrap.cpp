@@ -217,7 +217,15 @@ Handle<Value> ClipperWrap::Union(const Arguments& args) {
 
     Handle<Array> final = Array::New();
 
-    if (!do_clipping_operation(*obj, final, ctUnion)) {
+    if (!do_clipping_operation(args, *obj, final, ctUnion)) {
+        return scope.Close(Undefined());
+    }
+
+    if (args[0]->IsFunction()) {
+        Local<Function> cb = Local<Function>::Cast(args[0]);
+        const unsigned argc = 2;
+        Local<Value> argv[argc] = { Local<Value>::New(Boolean::New(false)), Local<Value>::New(final) };
+        cb->Call(Context::GetCurrent()->Global(), argc, argv);
         return scope.Close(Undefined());
     }
 
@@ -231,7 +239,15 @@ Handle<Value> ClipperWrap::Intersection(const Arguments& args) {
 
     Handle<Array> final = Array::New();
 
-    if (!do_clipping_operation(*obj, final, ctIntersection)) {
+    if (!do_clipping_operation(args, *obj, final, ctIntersection)) {
+        return scope.Close(Undefined());
+    }
+
+    if (args[0]->IsFunction()) {
+        Local<Function> cb = Local<Function>::Cast(args[0]);
+        const unsigned argc = 2;
+        Local<Value> argv[argc] = { Local<Value>::New(Boolean::New(false)), Local<Value>::New(final) };
+        cb->Call(Context::GetCurrent()->Global(), argc, argv);
         return scope.Close(Undefined());
     }
 
@@ -245,7 +261,15 @@ Handle<Value> ClipperWrap::Difference(const Arguments& args) {
 
     Handle<Array> final = Array::New();
 
-    if (!do_clipping_operation(*obj, final, ctDifference)) {
+    if (!do_clipping_operation(args, *obj, final, ctDifference)) {
+        return scope.Close(Undefined());
+    }
+
+    if (args[0]->IsFunction()) {
+        Local<Function> cb = Local<Function>::Cast(args[0]);
+        const unsigned argc = 2;
+        Local<Value> argv[argc] = { Local<Value>::New(Boolean::New(false)), Local<Value>::New(final) };
+        cb->Call(Context::GetCurrent()->Global(), argc, argv);
         return scope.Close(Undefined());
     }
 
@@ -259,19 +283,27 @@ Handle<Value> ClipperWrap::Xor(const Arguments& args) {
 
     Handle<Array> final = Array::New();
 
-    if (!do_clipping_operation(*obj, final, ctXor)) {
+    if (!do_clipping_operation(args, *obj, final, ctXor)) {
+        return scope.Close(Undefined());
+    }
+
+    if (args[0]->IsFunction()) {
+        Local<Function> cb = Local<Function>::Cast(args[0]);
+        const unsigned argc = 2;
+        Local<Value> argv[argc] = { Local<Value>::New(Boolean::New(false)), Local<Value>::New(final) };
+        cb->Call(Context::GetCurrent()->Global(), argc, argv);
         return scope.Close(Undefined());
     }
 
     return scope.Close(final);
 }
 
-bool ClipperWrap::do_clipping_operation(ClipperWrap &obj, Handle<Array> &final, ClipType type) {
+bool ClipperWrap::do_clipping_operation(const Arguments& args, ClipperWrap &obj, Handle<Array> &final, ClipType type) {
     PolyTree solution;
 
     // Execute the union operation
     if (!obj.clipper_.Execute(type, solution, obj.subj_fill_, obj.clip_fill_)) {
-        ThrowException(Exception::Error(String::New("An error occurred when attempting to perform the union operation")));
+        handle_exception(args, Exception::Error(String::New("An error occurred when attempting to perform the union operation")));
         return false;
     }
 
