@@ -29,13 +29,40 @@ This is illustrated in the following diagram:
     |-> begin():
     |   |-> setFillTypes()
     |   |-> addSubjectPath()
-    |   `-> addClipPath()
+    |   |-> addClipPath()
+    |   `-> union()
     |-> area()
     |-> clean()
     |-> cleanAll()
     |-> simplify()
     `-> simplifyAll()
 
-TODO: document clipping operation module
+In the documentation below, the variable `clipper` is used to denote the object returned from `require('clipper');`, while the variable `op` is the object returned from a `clipper.begin()` call.
 
-TODO: document utility function module
+Clipping Operation Module
+-------
+
+#### clipper.begin([callback]);
+
+Starts a new clipper operation. This also sets both the subject and clip fill types to EVENODD.
+
+#### op.setFillTypes(subjFillType[, clipFillType][, callback]);
+
+Sets the subject fill type (and optionally the clip fill type). Use the values defined in clipper.PolyFillType. For example:
+
+    op.setFillTypes(clipper.PolyFillType.POSITIVE);
+
+Possible fill types are EVENODD, NONZERO, POSITIVE, and NEGATIVE.
+
+#### op.addSubjectPath(path, closed[, callback]);
+
+Adds an open or closed subject path to the the clipping operation. The path should be a list of (x, y) vertices given in an array.
+
+#### op.addClipPath(path[, callback]);
+
+Adds a clip path to the clipping operation. The path should be a list of (x, y) vertices given in an array.
+
+Utility Function Module
+-------
+
+TODO: implement/document utility functions
