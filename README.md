@@ -28,6 +28,7 @@ This is illustrated in the following diagram:
     clipper
     |-> begin():
     |   |-> setFillTypes()
+    |   |-> setFactor()
     |   |-> addSubjectPath()
     |   |-> addClipPath()
     |   `-> union()
@@ -54,6 +55,10 @@ Sets the subject fill type (and optionally the clip fill type). Use the values d
 
 Possible fill types are EVENODD, NONZERO, POSITIVE, and NEGATIVE.
 
+#### op.setFactor(factor[, callback]);
+
+Sets the factor used to transform each coordinate. Useful when the coordinates are given in small units such as `[0.0, 0.0, 0.010, 0.0, 0.010, 0.010, 0.0, 0.010]`. Clipper works in integers, so the coordinates must be scalled up. For example, the factor could be set to 1000. The result from any clipping operation will return any results inte original scale.
+
 #### op.addSubjectPath(path, closed[, callback]);
 
 Adds an open or closed subject path to the the clipping operation. The path should be a list of (x, y) vertices given in an array.
@@ -61,6 +66,22 @@ Adds an open or closed subject path to the the clipping operation. The path shou
 #### op.addClipPath(path[, callback]);
 
 Adds a clip path to the clipping operation. The path should be a list of (x, y) vertices given in an array.
+
+#### op.union([callback]);
+
+Performs the union operation.
+
+#### op.intersection([callback]);
+
+Performs the intersection operation.
+
+#### op.difference([callback]);
+
+Performs the difference operation.
+
+#### op.xor([callback]);
+
+Performs the xor operation.
 
 Utility Function Module
 -------
