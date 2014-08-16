@@ -367,8 +367,8 @@ PolyFillType get_polyfilltype (double value) {
 void get_vertices_from_path(Path &path, Handle<Array> &array, double factor) {
     for (vector<IntPoint>::iterator point_iter = path.begin(); point_iter != path.end(); ++point_iter) {
         // Retrieve the points from the path as doubles
-        Handle<Number> x = Number::New((double)(point_iter->X / factor));
-        Handle<Number> y = Number::New((double)(point_iter->Y / factor));
+        Handle<Number> x = Number::New(((double)point_iter->X) / factor);
+        Handle<Number> y = Number::New(((double)point_iter->Y) / factor);
         array->Set(array->Length(), x);
         array->Set(array->Length(), y);
     }

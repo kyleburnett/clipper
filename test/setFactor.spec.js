@@ -37,4 +37,17 @@ describe('#setFillTypes()', function() {
     it('should set the factor for the clipping operation', function() {
         expect(clip1.setFactor(1000)).to.be.undefined;
     });
+
+    it('should set the factor using callbacks', function(done) {
+        clipper.begin(function(err, clip) {
+            clip.setFactor(1000);
+            done();
+        });
+    });
+
+    it('should set the factor with promise', function() {
+        return clipper.beginAsync().then(Promise.promisifyAll).then(function(clip) {
+            return clip.setFactorAsync(1000);
+        });
+    });
 });
