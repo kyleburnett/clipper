@@ -13,6 +13,7 @@ Persistent<Function> ClipperWrap::constructor;
 ClipperWrap::ClipperWrap() {
     subj_fill_ = pftEvenOdd;
     clip_fill_ = pftEvenOdd;
+    factor_ = 1.0;
 }
 
 ClipperWrap::~ClipperWrap() {}
@@ -30,6 +31,8 @@ void ClipperWrap::Init() {
         FunctionTemplate::New(AddClipPath)->GetFunction());
     tpl->PrototypeTemplate()->Set(String::NewSymbol("setFillTypes"),
         FunctionTemplate::New(SetFillTypes)->GetFunction());
+    tpl->PrototypeTemplate()->Set(String::NewSymbol("setFactor"),
+        FunctionTemplate::New(SetFactor)->GetFunction());
     tpl->PrototypeTemplate()->Set(String::NewSymbol("union"),
         FunctionTemplate::New(Union)->GetFunction());
     tpl->PrototypeTemplate()->Set(String::NewSymbol("intersection"),
@@ -104,7 +107,7 @@ Handle<Value> ClipperWrap::AddSubjectPath(const Arguments& args) {
         return scope.Close(Undefined());
     }
 
-    if (!add_path(args, obj->clipper_, path, ptSubject, args[1]->ToBoolean()->Value())) {
+    if (!add_path(args, obj->clipper_, path, ptSubject, args[1]->ToBoolean()->Value(), obj->factor_)) {
         return scope.Close(Undefined());
     }
 
@@ -136,7 +139,7 @@ Handle<Value> ClipperWrap::AddClipPath(const Arguments& args) {
         return scope.Close(Undefined());
     }
 
-    if (!add_path(args, obj->clipper_, path, ptClip, true)) {
+    if (!add_path(args, obj->clipper_, path, ptClip, true, obj->factor_)) {
         return scope.Close(Undefined());
     }
 
@@ -206,6 +209,35 @@ Handle<Value> ClipperWrap::SetFillTypes(const Arguments& args) {
     // Commit changes
     obj->subj_fill_ = subj_temp;
     obj->clip_fill_ = clip_temp;
+
+    return scope.Close(Undefined());
+}
+
+Handle<Value> ClipperWrap::SetFactor(const Arguments& args) {
+    HandleScope scope;
+
+    ClipperWrap* obj = ObjectWrap::Unwrap<ClipperWrap>(args.This());
+
+    if (args.Length() < 1 || args.Length() > 2) {
+        handle_exception(args, Exception::Error(String::New("Requires 1 or 2 arguments")));
+        return scope.Close(Undefined());
+    }
+
+    // First argument
+    if (!args[0]->IsNumber()) {
+        handle_exception(args, Exception::TypeError(String::New("Wrong type for argument 1: expected number")));
+        return scope.Close(Undefined());
+    }
+
+    // Second argument (optional)
+    if (args.Length() == 2 && args[1]->IsFunction()) {
+        Local<Function> cb = Local<Function>::Cast(args[1]);
+        const unsigned argc = 2;
+        Local<Value> argv[argc] = { Local<Value>::New(Boolean::New(false)), Local<Value>::New(Undefined()) };
+        cb->Call(Context::GetCurrent()->Global(), argc, argv);
+    }
+
+    obj->factor_ = args[0]->NumberValue();
 
     return scope.Close(Undefined());
 }
@@ -310,7 +342,7 @@ bool ClipperWrap::do_clipping_operation(const Arguments& args, ClipperWrap &obj,
     Handle<Array> polygons = Array::New();
     Handle<Array> polylines = Array::New();
 
-    get_clip_solution(solution, polygons, polylines);
+    get_clip_solution(solution, polygons, polylines, obj.factor_);
 
     // Set the final array as a 2-element array containing the list of polygons and the list of polylines
     final->Set(final->Length(), polygons);
@@ -332,17 +364,17 @@ PolyFillType get_polyfilltype (double value) {
     }
 }
 
-void get_vertices_from_path(Path &path, Handle<Array> &array) {
+void get_vertices_from_path(Path &path, Handle<Array> &array, double factor) {
     for (vector<IntPoint>::iterator point_iter = path.begin(); point_iter != path.end(); ++point_iter) {
         // Retrieve the points from the path as doubles
-        Handle<Number> x = Number::New((double)point_iter->X);
-        Handle<Number> y = Number::New((double)point_iter->Y);
+        Handle<Number> x = Number::New((double)(point_iter->X / factor));
+        Handle<Number> y = Number::New((double)(point_iter->Y / factor));
         array->Set(array->Length(), x);
         array->Set(array->Length(), y);
     }
 }
 
-void get_clip_solution(PolyTree &solution, Handle<Array> &polygons, Handle<Array> &polylines) {
+void get_clip_solution(PolyTree &solution, Handle<Array> &polygons, Handle<Array> &polylines, double factor) {
     Paths open, closed;
 
     OpenPathsFromPolyTree(solution, open);
@@ -351,25 +383,25 @@ void get_clip_solution(PolyTree &solution, Handle<Array> &polygons, Handle<Array
     // Use handles to collect polygon vertices into array for polygons
     for (vector<Path>::iterator path_it = closed.begin(); path_it != closed.end(); ++path_it) {
         Handle<Array> vertices = Array::New();
-        get_vertices_from_path(*path_it, vertices);
+        get_vertices_from_path(*path_it, vertices, factor);
         polygons->Set(polygons->Length(), vertices);
     }
     // Use handles to collect polyline vertices into array for polylines
     for (vector<Path>::iterator path_it = open.begin(); path_it != open.end(); ++path_it) {
         Handle<Array> vertices = Array::New();
-        get_vertices_from_path(*path_it, vertices);
+        get_vertices_from_path(*path_it, vertices, factor);
         polylines->Set(polylines->Length(), vertices);
     }
 
 }
 
-bool add_path(const Arguments& args, Clipper &clipper, Local<Array> &vertices, PolyType type, bool closed) {
+bool add_path(const Arguments& args, Clipper &clipper, Local<Array> &vertices, PolyType type, bool closed, double factor) {
     int i;
     const int len = vertices->Length();
     Path path;
     for (i = 0; i < len; i+=2) {
-        double a = vertices->Get(i)->NumberValue(),
-               b = vertices->Get(i+1)->NumberValue();
+        double a = vertices->Get(i)->NumberValue() * factor,
+               b = vertices->Get(i+1)->NumberValue() * factor;
         path << IntPoint(a, b);
     }
 
