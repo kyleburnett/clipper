@@ -46,10 +46,6 @@ In the documentation below, the variable `clipper` is used to denote the object 
 Clipping Operation Module
 -------
 
-#### clipper.area(path[, callback]);
-
-Computes the area of the given polygon.
-
 #### clipper.begin([callback]);
 
 Starts a new clipper operation. This also sets both the subject and clip fill types to EVENODD.
@@ -93,6 +89,10 @@ Performs the xor operation. Returns an array of size 2. The first element is an 
 Utility Function Module
 -------
 
+#### clipper.area(path[, callback]);
+
+Computes the area of the given polygon.
+
 #### clipper.clean(path[, factor=1.0[, distance=1.415]][, callback]);
 
 Performs the clean operation, which does the following:
@@ -112,6 +112,6 @@ Performs the clean operation as above, except with multiple closed paths. Return
 Removes self-intersections from the supplied polygon (by performing a boolean union operation using the nominated PolyFillType).
 Polygons with non-contiguous duplicate vertices (ie 'touching') will be split into two polygons. Returns a paths array. Please see the [SimplifyPolygon Documentation](http://www.angusj.com/delphi/clipper/documentation/Docs/Units/ClipperLib/Functions/SimplifyPolygon.htm) for examples.
 
-#### clipper.simplifyAll(paths[, factor=1.0][, callback]);
+#### clipper.simplifyAll(paths[, factor=1.0][, PolyFillType=EVENODD][, callback]);
 
 Performs the simplify operation as above, except with multiple closed paths. Returns a paths array.
