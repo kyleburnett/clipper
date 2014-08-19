@@ -31,7 +31,10 @@ This is illustrated in the following diagram:
     |   |-> setFactor()
     |   |-> addSubjectPath()
     |   |-> addClipPath()
-    |   `-> union()
+    |   |-> union()
+    |   |-> intersection()
+    |   |-> difference()
+    |   `-> xor()
     |-> area()
     |-> clean()
     |-> cleanAll()
@@ -42,6 +45,10 @@ In the documentation below, the variable `clipper` is used to denote the object 
 
 Clipping Operation Module
 -------
+
+#### clipper.area(path[, callback]);
+
+Computes the area of the given polygon.
 
 #### clipper.begin([callback]);
 
