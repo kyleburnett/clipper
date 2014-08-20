@@ -9,7 +9,7 @@ var poly2 = [5, 5, 15, 5, 15, 15, 5, 15];
 function wrap(clip, args) {
     return function() {
         clip.addSubjectPath.apply(clip, args);
-    }
+    };
 }
 
 describe('#addSubjectPath()', function() {

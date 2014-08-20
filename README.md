@@ -89,7 +89,7 @@ Performs the xor operation. Returns an array of size 2. The first element is an 
 Utility Function Module
 -------
 
-#### clipper.area(path[, callback]);
+#### clipper.area(path[, factor=1.0][, callback]);
 
 Computes the area of the given polygon.
 

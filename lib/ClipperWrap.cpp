@@ -424,3 +424,41 @@ void handle_exception(const Arguments& args, Local<Value> e) {
         ThrowException(e);
     }
 }
+
+Handle<Value> compute_area(const Arguments& args) {
+    HandleScope scope;
+    double factor = 1.0;
+
+    if (!args[0]->IsArray()) {
+        handle_exception(args, Exception::TypeError(String::New("Wrong type for argument 1: expected array")));
+        return scope.Close(Undefined());
+    }
+
+    if (args[1]->IsNumber()) {
+        factor = args[1]->NumberValue();
+    }
+
+    int i;
+    Local<Array> vertices = Array::Cast(*args[0]);
+    const int len = vertices->Length();
+    Path path;
+    for (i = 0; i < len; i+=2) {
+        double a = vertices->Get(i)->NumberValue() * factor,
+               b = vertices->Get(i+1)->NumberValue() * factor;
+        path << IntPoint(a, b);
+    }
+
+    double area = Area(path) / (factor * factor);
+    Local<Value> result = Number::New(area);
+
+    int arg_len = args.Length();
+    if (args[arg_len-1]->IsFunction()) {
+        Local<Function> cb = Local<Function>::Cast(args[arg_len-1]);
+        const unsigned argc = 2;
+        Local<Value> argv[argc] = { Local<Value>::New(Boolean::New(false)), Local<Value>::New(result) };
+        cb->Call(Context::GetCurrent()->Global(), argc, argv);
+        return scope.Close(Undefined());
+    }
+
+    return scope.Close(result);
+}

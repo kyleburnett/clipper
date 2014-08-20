@@ -7,7 +7,7 @@ var clip1 = clipper.begin();
 function wrap(clip, args) {
     return function() {
         clip.setFactor.apply(clip, args);
-    }
+    };
 }
 
 var types = clipper.PolyFillType;
