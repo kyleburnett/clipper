@@ -40,5 +40,6 @@ bool add_path(const v8::Arguments& args, ClipperLib::Clipper &clipper, v8::Local
 void handle_exception(const v8::Arguments& args, v8::Local<v8::Value> e);
 
 v8::Handle<v8::Value> compute_area(const v8::Arguments& args);
+v8::Handle<v8::Value> clean(const v8::Arguments& args);
 
 #endif

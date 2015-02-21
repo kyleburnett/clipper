@@ -25,21 +25,23 @@ The second part comprises a collection of utility functions that clipper provide
 
 This is illustrated in the following diagram:
 
-    clipper
-    |-> begin():
-    |   |-> setFillTypes()
-    |   |-> setFactor()
-    |   |-> addSubjectPath()
-    |   |-> addClipPath()
-    |   |-> union()
-    |   |-> intersection()
-    |   |-> difference()
-    |   `-> xor()
-    |-> area()
-    |-> clean()
-    |-> cleanAll()
-    |-> simplify()
-    `-> simplifyAll()
+```
+clipper
+|-> begin():
+|   |-> setFillTypes()
+|   |-> setFactor()
+|   |-> addSubjectPath()
+|   |-> addClipPath()
+|   |-> union()
+|   |-> intersection()
+|   |-> difference()
+|   `-> xor()
+|-> area()
+|-> clean()
+|-> cleanAll()
+|-> simplify()
+`-> simplifyAll()
+```
 
 In the documentation below, the variable `clipper` is used to denote the object returned from `require('clipper');`, while the variable `op` is the object returned from a `clipper.begin()` call. Also note that when a path is given as a parameter or return type, it always refers to an array of path vertices like `[x_0, y_0, x_1, y_1, x_2, y_2, ...]`. `paths` refers to an array of multiple `path`s.
 
@@ -115,3 +117,16 @@ Polygons with non-contiguous duplicate vertices (ie 'touching') will be split in
 #### clipper.simplifyAll(paths[, factor=1.0][, PolyFillType=EVENODD][, callback]);
 
 Performs the simplify operation as above, except with multiple closed paths. Returns a paths array.
+
+# TODO
+
+- Implement cleanAll, simplify, and simplifyAll.
+- Finish unit testing.
+  - addClipPath
+  - xor
+  - difference
+  - intersection
+  - clean
+  - cleanAll
+  - simplify
+  - simplifyAll

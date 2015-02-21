@@ -39,7 +39,7 @@ describe('#union', function() {
     it('should return the union of two polygons with promises', function() {
         return clipper.beginAsync().then(Promise.promisifyAll).then(function(clip) {
             return Promise.all([
-                clip.setFillTypes(types.POSITIVE, types.POSITIVE),
+                clip.setFillTypesAsync(types.POSITIVE, types.POSITIVE),
                 clip.addSubjectPathAsync(poly1, true),
                 clip.addSubjectPathAsync(poly2, true)
             ]).then(function() {

@@ -13,8 +13,13 @@ Handle<Value> Begin(const Arguments& args) {
 }
 
 Handle<Value> Area(const Arguments& args) {
-	HandleScope scope;
-	return scope.Close(compute_area(args));
+    HandleScope scope;
+    return scope.Close(compute_area(args));
+}
+
+Handle<Value> Clean(const Arguments& args) {
+    HandleScope scope;
+    return scope.Close(clean(args));
 }
 
 extern "C" {
@@ -24,7 +29,9 @@ extern "C" {
         exports->Set(String::NewSymbol("begin"),
             FunctionTemplate::New(Begin)->GetFunction());
         exports->Set(String::NewSymbol("area"),
-        	FunctionTemplate::New(Area)->GetFunction());
+            FunctionTemplate::New(Area)->GetFunction());
+        exports->Set(String::NewSymbol("clean"),
+            FunctionTemplate::New(Clean)->GetFunction());
     }
     NODE_MODULE(clipper, init)
 }
