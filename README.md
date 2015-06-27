@@ -110,14 +110,12 @@ Returns a path. Please see the [CleanPolygon Documentation](http://www.angusj.co
 #### clipper.simplify(path[, factor=1.0[, PolyFillType=EVENODD]][, callback]);
 
 Removes self-intersections from the supplied polygon (by performing a boolean union operation using the nominated PolyFillType).
-Polygons with non-contiguous duplicate vertices (ie 'touching') will be split into two polygons. Returns an array of two elements where the first element is an array of outer polygons and the second element is an array of hole polygons. Please see the [SimplifyPolygon Documentation](http://www.angusj.com/delphi/clipper/documentation/Docs/Units/ClipperLib/Functions/SimplifyPolygon.htm) for examples.
+Polygons with non-contiguous duplicate vertices (ie 'touching') will be split into two polygons. Returns an array of paths. Please see the [SimplifyPolygon Documentation](http://www.angusj.com/delphi/clipper/documentation/Docs/Units/ClipperLib/Functions/SimplifyPolygon.htm) for examples.
 
 # TODO
 
-- Implement and unit test cleanAll, and simplifyAll.
+- Implement and unit test cleanAll and simplifyAll.
 - Finish unit testing.
   - xor
   - difference
   - intersection
-  - cleanAll
-  - simplifyAll

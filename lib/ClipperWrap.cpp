@@ -538,19 +538,20 @@ Handle<Value> simplify(const Arguments& args) {
     SimplifyPolygon(path, out, polyfill);
 
     Handle<Array> result = Array::New();
-    Handle<Array> result_out = Array::New();
-    Handle<Array> result_hole = Array::New();
+    // Handle<Array> result_out = Array::New();
+    // Handle<Array> result_hole = Array::New();
     for (vector<Path>::iterator path_it = out.begin(); path_it != out.end(); ++path_it) {
         Handle<Array> path_result = Array::New();
         get_vertices_from_path(*path_it, path_result, factor);
-        if (Orientation(*path_it)) {
-            result_out->Set(result_out->Length(), path_result);
-        } else {
-            result_hole->Set(result_hole->Length(), path_result);
-        }
+        result->Set(result->Length(), path_result);
+        // if (Orientation(*path_it)) {
+        //     result_out->Set(result_out->Length(), path_result);
+        // } else {
+        //     result_hole->Set(result_hole->Length(), path_result);
+        // }
     }
-    result->Set(0, result_out);
-    result->Set(1, result_hole);
+    // result->Set(0, result_out);
+    // result->Set(1, result_hole);
 
     int arg_len = args.Length();
     if (args[arg_len-1]->IsFunction()) {

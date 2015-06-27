@@ -36,12 +36,9 @@ describe('clipper.simplify()', function() {
         var poly = [480, 120, 600, 515, 285, 275, 675, 275, 360, 515];
         expect(clipper.simplify(poly, 1.0, clipper.PolyFillType.NONZERO)).to.eql([
             [
-                [
-                    527, 275, 675, 275, 555, 367, 600, 515, 480, 424,
-                    360, 515, 405, 367, 285, 275, 433, 275, 480, 120
-                ]
-            ],
-            []
+                527, 275, 675, 275, 555, 367, 600, 515, 480, 424,
+                360, 515, 405, 367, 285, 275, 433, 275, 480, 120
+            ]
         ]);
     });
 
@@ -53,14 +50,11 @@ describe('clipper.simplify()', function() {
         var poly = [0, 0, 0, 10, 10, 10, 10, 20, 20, 20, 20, 10, 10, 10, 10, 0];
         expect(clipper.simplify(poly, 1.0, clipper.PolyFillType.NONZERO)).to.eql([
             [
-                [
-                    20, 10, 20, 20, 10, 20, 10, 10
-                ],
-                [
-                    0, 10, 0, 0, 10, 0, 10, 10
-                ]
+                20, 10, 20, 20, 10, 20, 10, 10
             ],
-            []
+            [
+                0, 10, 0, 0, 10, 0, 10, 10
+            ]
         ]);
     });
 
@@ -72,14 +66,10 @@ describe('clipper.simplify()', function() {
         var poly = [0, 10, 10, 20, 5, 10, 15, 10, 10, 20, 20, 10, 10, 0];
         expect(clipper.simplify(poly, 1.0, clipper.PolyFillType.NONZERO)).to.eql([
             [
-                [
-                    0, 10, 10, 0, 20, 10, 10, 20
-                ]
+                15, 10, 5, 10, 10, 20
             ],
             [
-                [
-                    15, 10, 5, 10, 10, 20
-                ]
+                0, 10, 10, 0, 20, 10, 10, 20
             ]
         ]);
     });
@@ -88,12 +78,9 @@ describe('clipper.simplify()', function() {
         var poly = [0.480, 0.120, 0.600, 0.515, 0.285, 0.275, 0.675, 0.275, 0.360, 0.515];
         expect(clipper.simplify(poly, 1000, clipper.PolyFillType.NONZERO)).to.eql([
             [
-                [
-                    0.527, 0.275, 0.675, 0.275, 0.555, 0.367, 0.600, 0.515, 0.480, 0.424,
-                    0.360, 0.515, 0.405, 0.367, 0.285, 0.275, 0.433, 0.275, 0.480, 0.120
-                ]
-            ],
-            []
+                0.527, 0.275, 0.675, 0.275, 0.555, 0.367, 0.600, 0.515, 0.480, 0.424,
+                0.360, 0.515, 0.405, 0.367, 0.285, 0.275, 0.433, 0.275, 0.480, 0.120
+            ]
         ]);
     });
 
@@ -102,12 +89,9 @@ describe('clipper.simplify()', function() {
         clipper.simplify(poly, 1.0, clipper.PolyFillType.NONZERO, function(err, result) {
             expect(result).to.eql([
                 [
-                    [
-                        527, 275, 675, 275, 555, 367, 600, 515, 480, 424,
-                        360, 515, 405, 367, 285, 275, 433, 275, 480, 120
-                    ]
-                ],
-                []
+                    527, 275, 675, 275, 555, 367, 600, 515, 480, 424,
+                    360, 515, 405, 367, 285, 275, 433, 275, 480, 120
+                ]
             ]);
             done();
         });
@@ -115,14 +99,13 @@ describe('clipper.simplify()', function() {
 
     it('should correctly simplify a polygon using promises', function() {
         var poly = [480, 120, 600, 515, 285, 275, 675, 275, 360, 515];
-        return clipper.simplifyAsync(poly, 1.0, clipper.PolyFillType.NONZERO).spread(function(outer, hole) {
-            expect(outer).to.eql([
+        return clipper.simplifyAsync(poly, 1.0, clipper.PolyFillType.NONZERO).then(function(paths) {
+            expect(paths).to.eql([
                 [
                     527, 275, 675, 275, 555, 367, 600, 515, 480, 424,
                     360, 515, 405, 367, 285, 275, 433, 275, 480, 120
                 ]
             ]);
-            expect(hole).to.eql([]);
         });
     });
 
