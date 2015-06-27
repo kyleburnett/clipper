@@ -67,4 +67,16 @@ describe('clipper.area()', function() {
             expect(area).to.eql(0.0001);
         });
     });
+
+    it('should be able to use callbacks to catch errors', function(done) {
+        clipper.area(true, function(err, area) {
+            expect(err).to.eql(new Error('Wrong type for argument 1: expected array'));
+            expect(area).to.be.undefined;
+            done();
+        });
+    });
+
+    it('should be able to catch errors with promises', function() {
+        return clipper.areaAsync(true).should.be.rejectedWith(Error, 'Wrong type for argument 1: expected array');
+    });
 });

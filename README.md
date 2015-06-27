@@ -107,26 +107,17 @@ Performs the clean operation, which does the following:
 
 Returns a path. Please see the [CleanPolygon Documentation](http://www.angusj.com/delphi/clipper/documentation/Docs/Units/ClipperLib/Functions/CleanPolygon.htm) for examples.
 
-#### clipper.cleanAll(paths[, factor=1.0[, distance=1.415]][, callback]);
-
-Performs the clean operation as above, except with multiple closed paths. Returns a paths array.
-
-#### clipper.simplify(path[, factor=1.0][, PolyFillType=EVENODD][, callback]);
+#### clipper.simplify(path[, factor=1.0[, PolyFillType=EVENODD]][, callback]);
 
 Removes self-intersections from the supplied polygon (by performing a boolean union operation using the nominated PolyFillType).
-Polygons with non-contiguous duplicate vertices (ie 'touching') will be split into two polygons. Returns a paths array. Please see the [SimplifyPolygon Documentation](http://www.angusj.com/delphi/clipper/documentation/Docs/Units/ClipperLib/Functions/SimplifyPolygon.htm) for examples.
-
-#### clipper.simplifyAll(paths[, factor=1.0][, PolyFillType=EVENODD][, callback]);
-
-Performs the simplify operation as above, except with multiple closed paths. Returns a paths array.
+Polygons with non-contiguous duplicate vertices (ie 'touching') will be split into two polygons. Returns an array of two elements where the first element is an array of outer polygons and the second element is an array of hole polygons. Please see the [SimplifyPolygon Documentation](http://www.angusj.com/delphi/clipper/documentation/Docs/Units/ClipperLib/Functions/SimplifyPolygon.htm) for examples.
 
 # TODO
 
-- Implement cleanAll, simplify, and simplifyAll.
+- Implement and unit test cleanAll, and simplifyAll.
 - Finish unit testing.
   - xor
   - difference
   - intersection
   - cleanAll
-  - simplify
   - simplifyAll

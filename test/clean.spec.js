@@ -8,7 +8,7 @@ function wrap(args) {
     };
 }
 
-describe.only('clipper.clean()', function() {
+describe('clipper.clean()', function() {
     it('should throw an error if no arguments are provided', function() {
         expect(wrap([])).to.throw(TypeError, 'Wrong type for argument 1: expected array');
     });
@@ -102,5 +102,17 @@ describe.only('clipper.clean()', function() {
         return clipper.cleanAsync(poly, 1.0, 0.01).then(function(cleaned) {
             expect(cleaned).to.eql(poly);
         });
+    });
+
+    it('should be able to use callbacks to catch errors', function(done) {
+        clipper.clean(true, function(err, cleaned) {
+            expect(err).to.eql(new Error('Wrong type for argument 1: expected array'));
+            expect(cleaned).to.be.undefined;
+            done();
+        });
+    });
+
+    it('should be able to catch errors with promises', function() {
+        return clipper.cleanAsync(true).should.be.rejectedWith(Error, 'Wrong type for argument 1: expected array');
     });
 });

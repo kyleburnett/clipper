@@ -22,6 +22,11 @@ Handle<Value> Clean(const Arguments& args) {
     return scope.Close(clean(args));
 }
 
+Handle<Value> Simplify(const Arguments& args) {
+    HandleScope scope;
+    return scope.Close(simplify(args));
+}
+
 extern "C" {
     static void init(Handle<Object> exports) {
         ClipperWrap::Init();
@@ -32,6 +37,8 @@ extern "C" {
             FunctionTemplate::New(Area)->GetFunction());
         exports->Set(String::NewSymbol("clean"),
             FunctionTemplate::New(Clean)->GetFunction());
+        exports->Set(String::NewSymbol("simplify"),
+            FunctionTemplate::New(Simplify)->GetFunction());
     }
     NODE_MODULE(clipper, init)
 }

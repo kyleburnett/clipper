@@ -74,7 +74,7 @@ describe('#addClipPath()', function() {
         });
     });
 
-    it('should be able catch errors with promises', function() {
+    it('should be able to catch errors with promises', function() {
         return clipper.beginAsync().then(Promise.promisifyAll).then(function(clip) {
             return clip.addClipPathAsync([0, 0, 10, 0, 10, 10, 0]);
         }).should.be.rejectedWith(Error, 'Wrong number of vertex coordinates in list');
