@@ -493,7 +493,7 @@ Handle<Value> clean(const Arguments& args) {
     CleanPolygon(path, out, distance);
 
     Handle<Array> result = Array::New();
-    get_vertices_from_path(path, result, factor);
+    get_vertices_from_path(out, result, factor);
 
     int arg_len = args.Length();
     if (args[arg_len-1]->IsFunction()) {

@@ -32,7 +32,7 @@ describe('#addSubjectPath()', function() {
         expect(wrap(clip1, args5)).to.throw(TypeError, 'Wrong type for argument 1: expected array');
     });
 
-    it('should throw an error if the second argument is a boolean value', function() {
+    it('should throw an error if the second argument is not a boolean value', function() {
         var args1 = [
             [], 0
         ];
@@ -65,6 +65,27 @@ describe('#addSubjectPath()', function() {
         expect(wrap(clip1, args)).to.throw(Error, 'Wrong number of vertex coordinates in list');
     });
 
+    it('should throw an error if the vertex array has less than 2 vertices', function() {
+        var args = [
+            [0, 0], true
+        ];
+        expect(wrap(clip1, args)).to.throw(Error, 'An error occurred when attempting to add a path');
+    });
+
+    it('should throw an error if the vertex has 2 vertices but is not an open path', function() {
+        var args = [
+            [0, 0, 10, 0], true
+        ];
+        expect(wrap(clip1, args)).to.throw(Error, 'An error occurred when attempting to add a path');
+    });
+
+    it('should throw an error if the vertices are co-linear and not an open path', function() {
+        var args = [
+            [0, 0, 10, 0, 20, 0], true
+        ];
+        expect(wrap(clip1, args)).to.throw(Error, 'An error occurred when attempting to add a path');
+    });
+
     it('should add a polygon subject path to the clipper object', function() {
         expect(clip1.addSubjectPath(poly1, true)).to.be.undefined;
     });
@@ -95,11 +116,10 @@ describe('#addSubjectPath()', function() {
             expect(value).to.be.undefined;
             done();
         });
-    })
+    });
 
     it('should be able to use promises', function() {
         return clipper.beginAsync().then(Promise.promisifyAll).then(function(clip) {
-            Promise.promisifyAll(clip);
             return clip.addSubjectPathAsync(poly1, true).then(function(value) {
                 expect(value).to.be.undefined;
             });
@@ -108,7 +128,6 @@ describe('#addSubjectPath()', function() {
 
     it('should be able catch errors with promises', function() {
         return clipper.beginAsync().then(Promise.promisifyAll).then(function(clip) {
-            Promise.promisifyAll(clip);
             return clip.addSubjectPathAsync([0, 0, 10, 0, 10, 10, 0], true);
         }).should.be.rejectedWith(Error, 'Wrong number of vertex coordinates in list');
     });

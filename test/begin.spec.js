@@ -11,7 +11,7 @@ var types = clipper.PolyFillType;
 
 Promise.promisifyAll(clipper);
 
-describe('clipper.begin', function() {
+describe('clipper.begin()', function() {
     it('should return a default clipper object', function() {
         var clip = clipper.begin();
         test_methods(clip);

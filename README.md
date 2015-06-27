@@ -19,9 +19,9 @@ Use the module:
 Api Overview
 -------
 
-This library can be divided up into two parts. The first part is the clipping operation module. A clipping operation is initiated with a call to begin(). The returned object contains several function prototypes of its own.
+This library can be divided up into two parts. The first part is the clipping operation module. A clipping operation is initiated with a call to begin(). The returned object provides several functions of its own.
 
-The second part comprises a collection of utility functions that clipper provides for operating on paths in various ways.
+The second part comprises a collection of utility functions that clipper provides for operating on paths.
 
 This is illustrated in the following diagram:
 
@@ -62,15 +62,15 @@ Possible fill types are EVENODD, NONZERO, POSITIVE, and NEGATIVE.
 
 #### op.setFactor(factor[, callback]);
 
-Sets the factor used to transform each coordinate. Useful when the coordinates are given in small units such as `[0.0, 0.0, 0.010, 0.0, 0.010, 0.010, 0.0, 0.010]`. Clipper works in integers, so the coordinates must be scalled up. For example, the factor could be set to 1000. The result from any clipping operation will return any results inte original scale.
+Sets the factor used to transform each coordinate. Useful when the coordinates are given in small units such as `[0.0, 0.0, 0.010, 0.0, 0.010, 0.010, 0.0, 0.010]`. Clipper works in integers, so the coordinates must be scalled up. For example, the factor could be set to 1000. The result from any clipping operation will return any results in the original scale.
 
 #### op.addSubjectPath(path, closed[, callback]);
 
-Adds an open or closed subject path to the the clipping operation. The path should be a list of (x, y) vertices given in an array.
+Adds an open or closed subject path to the the clipping operation. The path should be a list of (x, y) vertices given in an array. The `closed` parameter indicates whether the path is closed (i.e., a polygon) or open (i.e., a polyline).
 
 #### op.addClipPath(path[, callback]);
 
-Adds a clip path to the clipping operation. The path should be a list of (x, y) vertices given in an array.
+Adds a clip path to the clipping operation. The path should be a list of (x, y) vertices given in an array. Note that clip paths are closed; that is, clip path must always represent polygons.
 
 #### op.union([callback]);
 
@@ -91,6 +91,8 @@ Performs the xor operation. Returns an array of size 2. The first element is an 
 Utility Function Module
 -------
 
+Note: Clipper works in integers, so double value are accepted but must be scalled up. For example, the factor could be set to 10 if measurements are given in centimeters with millimeter precision. In that case, the vertex (2.7, 12.9) would be transformed to (27, 129) for the purposes of the operation. The result from any clipping operation will return any results in the original scale.
+
 #### clipper.area(path[, factor=1.0][, callback]);
 
 Computes the area of the given polygon.
@@ -105,7 +107,7 @@ Performs the clean operation, which does the following:
 
 Returns a path. Please see the [CleanPolygon Documentation](http://www.angusj.com/delphi/clipper/documentation/Docs/Units/ClipperLib/Functions/CleanPolygon.htm) for examples.
 
-#### clipper.cleanAll(paths[, factor=1.0[,distance=1.415]][, callback]);
+#### clipper.cleanAll(paths[, factor=1.0[, distance=1.415]][, callback]);
 
 Performs the clean operation as above, except with multiple closed paths. Returns a paths array.
 
@@ -122,11 +124,9 @@ Performs the simplify operation as above, except with multiple closed paths. Ret
 
 - Implement cleanAll, simplify, and simplifyAll.
 - Finish unit testing.
-  - addClipPath
   - xor
   - difference
   - intersection
-  - clean
   - cleanAll
   - simplify
   - simplifyAll
