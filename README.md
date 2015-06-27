@@ -107,6 +107,10 @@ Performs the clean operation, which does the following:
 
 Returns a path. Please see the [CleanPolygon Documentation](http://www.angusj.com/delphi/clipper/documentation/Docs/Units/ClipperLib/Functions/CleanPolygon.htm) for examples.
 
+#### clipper.orientation(path[, factor=1.0][, callback]);
+
+Detects and reports whether the provided path is an outer or hole polygon. Please see the [Orientation Documentation](http://www.angusj.com/delphi/clipper/documentation/Docs/Units/ClipperLib/Functions/Orientation.htm) for more information.
+
 #### clipper.simplify(path[, factor=1.0[, PolyFillType=EVENODD]][, callback]);
 
 Removes self-intersections from the supplied polygon (by performing a boolean union operation using the nominated PolyFillType).

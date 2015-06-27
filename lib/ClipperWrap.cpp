@@ -538,20 +538,50 @@ Handle<Value> simplify(const Arguments& args) {
     SimplifyPolygon(path, out, polyfill);
 
     Handle<Array> result = Array::New();
-    // Handle<Array> result_out = Array::New();
-    // Handle<Array> result_hole = Array::New();
     for (vector<Path>::iterator path_it = out.begin(); path_it != out.end(); ++path_it) {
         Handle<Array> path_result = Array::New();
         get_vertices_from_path(*path_it, path_result, factor);
         result->Set(result->Length(), path_result);
-        // if (Orientation(*path_it)) {
-        //     result_out->Set(result_out->Length(), path_result);
-        // } else {
-        //     result_hole->Set(result_hole->Length(), path_result);
-        // }
     }
-    // result->Set(0, result_out);
-    // result->Set(1, result_hole);
+
+    int arg_len = args.Length();
+    if (args[arg_len-1]->IsFunction()) {
+        Local<Function> cb = Local<Function>::Cast(args[arg_len-1]);
+        const unsigned argc = 2;
+        Local<Value> argv[argc] = { Local<Value>::New(Boolean::New(false)), Local<Value>::New(result) };
+        cb->Call(Context::GetCurrent()->Global(), argc, argv);
+        return scope.Close(Undefined());
+    }
+
+    return scope.Close(result);
+}
+
+Handle<Value> orientation(const Arguments& args) {
+    HandleScope scope;
+    double factor = 1.0;
+
+    if (!args[0]->IsArray()) {
+        handle_exception(args, Exception::TypeError(String::New("Wrong type for argument 1: expected array")));
+        return scope.Close(Undefined());
+    }
+
+    if (args[1]->IsNumber()) {
+        factor = args[1]->NumberValue();
+    }
+
+    int i;
+    Local<Array> vertices = Array::Cast(*args[0]);
+    const int len = vertices->Length();
+    Path path;
+    for (i = 0; i < len; i+=2) {
+        double a = vertices->Get(i)->NumberValue() * factor,
+               b = vertices->Get(i+1)->NumberValue() * factor;
+        path << IntPoint(a, b);
+    }
+
+    bool orientation = Orientation(path);
+
+    Handle<Boolean> result = Boolean::New(orientation);
 
     int arg_len = args.Length();
     if (args[arg_len-1]->IsFunction()) {

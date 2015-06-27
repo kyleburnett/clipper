@@ -22,6 +22,11 @@ Handle<Value> Clean(const Arguments& args) {
     return scope.Close(clean(args));
 }
 
+Handle<Value> Orientation(const Arguments& args) {
+    HandleScope scope;
+    return scope.Close(orientation(args));
+}
+
 Handle<Value> Simplify(const Arguments& args) {
     HandleScope scope;
     return scope.Close(simplify(args));
@@ -37,6 +42,8 @@ extern "C" {
             FunctionTemplate::New(Area)->GetFunction());
         exports->Set(String::NewSymbol("clean"),
             FunctionTemplate::New(Clean)->GetFunction());
+        exports->Set(String::NewSymbol("orientation"),
+            FunctionTemplate::New(Orientation)->GetFunction());
         exports->Set(String::NewSymbol("simplify"),
             FunctionTemplate::New(Simplify)->GetFunction());
     }
