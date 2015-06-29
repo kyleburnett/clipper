@@ -119,7 +119,3 @@ Polygons with non-contiguous duplicate vertices (ie 'touching') will be split in
 # TODO
 
 - Implement and unit test cleanAll and simplifyAll.
-- Finish unit testing.
-  - xor
-  - difference
-  - intersection
