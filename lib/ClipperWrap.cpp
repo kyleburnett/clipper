@@ -188,6 +188,8 @@ Handle<Value> ClipperWrap::SetFillTypes(const Arguments& args) {
             handle_exception(args, Exception::TypeError(String::New("Wrong type for argument 2: expected number or function")));
             return scope.Close(Undefined());
         }
+    } else {
+        clip_temp = obj->clip_fill_;
     }
 
     // Third argument (optional)
