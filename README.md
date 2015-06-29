@@ -114,7 +114,7 @@ Detects and reports whether the provided path is an outer or hole polygon. Pleas
 #### clipper.simplify(path[, factor=1.0[, PolyFillType=EVENODD]][, callback]);
 
 Removes self-intersections from the supplied polygon (by performing a boolean union operation using the nominated PolyFillType).
-Polygons with non-contiguous duplicate vertices (ie 'touching') will be split into two polygons. Returns an array of paths. Please see the [SimplifyPolygon Documentation](http://www.angusj.com/delphi/clipper/documentation/Docs/Units/ClipperLib/Functions/SimplifyPolygon.htm) for examples.
+Polygons with non-contiguous duplicate vertices (ie 'touching') will be split into two polygons. Returns an array of paths. Please see the [SimplifyPolygon Documentation](http://www.angusj.com/delphi/clipper/documentation/Docs/Units/ClipperLib/Functions/SimplifyPolygon.htm) for examples. To find the orientation of a given path, use the orientation method.
 
 # TODO
 
